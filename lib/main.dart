@@ -225,7 +225,7 @@ class FavoritesPage extends StatelessWidget {
     }
 
     return Center(
-      child: ListView(
+      child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -239,16 +239,22 @@ class FavoritesPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          ...appState.favorites
-              .map(
-                (pair) => ListTile(
-                    leading: IconButton(
-                      onPressed: () => appState.deleteFavorite(pair),
-                      icon: Icon(Icons.delete),
-                    ),
-                    title: Text(pair.asLowerCase)),
-              )
-              .toList()
+          Expanded(
+            child: ListView(
+              children: [
+                ...appState.favorites
+                    .map(
+                      (pair) => ListTile(
+                          leading: IconButton(
+                            onPressed: () => appState.deleteFavorite(pair),
+                            icon: Icon(Icons.delete),
+                          ),
+                          title: Text(pair.asLowerCase)),
+                    )
+                    .toList()
+              ],
+            ),
+          ),
         ],
       ),
     );
