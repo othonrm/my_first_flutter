@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -72,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
   var count = 0;
+  bool _initialized = false;
   // var current = 1;
 
   void getNext() {
@@ -88,6 +92,7 @@ class MyAppState extends ChangeNotifier {
       favorites.add(current);
     }
     print('Favorites ${favorites}');
+    updateFavorites();
     notifyListeners();
   }
 
@@ -95,7 +100,48 @@ class MyAppState extends ChangeNotifier {
     if (favorites.contains(pair)) {
       favorites.remove(pair);
     }
+    updateFavorites();
     notifyListeners();
+  }
+
+  Future<void> updateFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    JsonEncoder encoder = JsonEncoder();
+    final List<List<String>> formattedFavs =
+        favorites.map((e) => e.asSnakeCase.split("_")).toList();
+    final String encodedFavs = jsonEncode(formattedFavs);
+    prefs.setString('favorites', encodedFavs);
+  }
+
+  Future<void> loadFavorites(BuildContext context) async {
+    if (_initialized) {
+      return;
+    }
+    _initialized = true;
+    print("Initializing favorites");
+
+    final prefs = await SharedPreferences.getInstance();
+    String? storedFavs = prefs.getString('favorites');
+    print("stored favs: ${storedFavs}");
+
+    if (storedFavs is String) {
+      try {
+        final List<dynamic> loadedFavs = jsonDecode(storedFavs);
+        final parsedFavs = loadedFavs.map((e) => WordPair(e[0], e[1])).toList();
+        favorites = parsedFavs;
+        notifyListeners();
+      } catch (e) {
+        print("Caught an error: $e");
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Error"),
+            content:
+                Text("Something went wrong while loading existing favorites."),
+          ),
+        );
+      }
+    }
   }
 }
 
@@ -107,7 +153,9 @@ class GeneratorPage extends StatelessWidget {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
 
-    // appState.count = 1;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      appState.loadFavorites(context);
+    });
 
     IconData icon;
     if (appState.favorites.contains(pair)) {
@@ -146,8 +194,7 @@ class GeneratorPage extends StatelessWidget {
                     SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: () {
-                        appState.count = appState.count + 1;
-
+                        appState.count++;
                         print('button pressed! ${appState.count}');
 
                         appState.getNext();
