@@ -1,16 +1,15 @@
 # my_first_flutter
 
-A new Flutter project.
+After deciding to take my first steps into Flutter (Dart) development, and after reading a few documents and watching some YouTube tutorials, this was my very first experience coding with Dart and Flutter.
+
+What you will se here is the result of me following Google's Flutter Codelab ["Your first Flutter app"](https://codelabs.developers.google.com/codelabs/flutter-codelab-first#8). (with some extra touch-ups)
 
 ## Getting Started
+1. `flutter pub get` (to install dependencies)
+2. `flutter run` to run the app or use your IDE "Run & Debug" controls.
+<br/>
+<sub>(considering you've all the [requirements of a flutter environment](https://docs.flutter.dev/get-started/install) fulfilled/installed)</sub>
 
-This project is a starting point for a Flutter application.
+## Preview
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![image](https://github.com/user-attachments/assets/ad52d0ae-1c9e-45f5-9a62-c9422d03f0cd) ![image](https://github.com/user-attachments/assets/639bb4ba-de80-4b25-b2cb-ab69dbb514f7)
